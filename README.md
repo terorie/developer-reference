@@ -1,42 +1,37 @@
 # Nimiq Blockchain
-[Nimiq](https://nimiq.com/) is a frictionless payment protocol for the web. For a high-level introduction please read the [Nimiq White Paper](https://medium.com/nimiq-network/nimiq-a-peer-to-peer-payment-protocol-native-to-the-web-ffd324bb084). The source code is available on [GitHub](https://github.com/nimiq-network/core).
+[Nimiq](https://nimiq.com/) ist ein reibungsloses Bezahlungsprotokoll für das Web. Für eine High-Level Einführung können Sie das [Nimiq White Paper](https://medium.com/nimiq-network/nimiq-a-peer-to-peer-payment-protocol-native-to-the-web-ffd324bb084) (Englisch) lesen. Der Quelltext ist auf [GitHub](https://github.com/nimiq-network/core) verfügbar.
 
-This developer reference contains:
+Diese Entwickler-Referenz enthält:
 
-* [Data Schemas](#data-schemas)
-* [High Level Concepts and Architecture](#high-level-concepts)
+* [Datenschemas](#datenschemas)
+* [High-Level-Konzepte und Architektur](#high-level-konzepte)
 
-## Data Schemas
+## Datenschemas
 
-Data schemas as used on the wire, focusing on fields, bytes sizes and short explanations.
+Datenschemas der Übertragung, mit Fokus auf Feldern, Byte Größen und kurzen Erklärungen.
 
-* [Transactions](chapters/transactions.md): basic and extended
-* [Blockchain](chapters/block.md): block, header, interlink, body
-* [Accounts and Contracts](chapters/accounts-and-contracts.md): basic account, vesting and hashed time-locked contracts
-* [Accounts Tree](chapters/account-tree.md): details on the Patricia Merkle Tree used to store accounts
-* [Primitives](chapters/primitives.md): none-composed elements, e.g. hashes, addresses
-* [Messages](chapters/messages.md): All p2p-related inter-node messages
+* [Transaktionen](chapters/transactions.md): basic and extended
+* [Blockchain](chapters/block.md): Block, Header, Interlink, Body
+* [Accounts and Verträge](chapters/accounts-and-contracts.md): Einfacher Account, Vesting and Hashed Time-Locked Contracts
+* [Account-Baum](chapters/account-tree.md): Details zum Patricia Merkle-Baum, der benutzt wird, um Accounts zu speichern
+* [Primitives](chapters/primitives.md): Nicht zusammengesetzte Elemente, z.B. Hashes, Adressen
+* [Nachrichten](chapters/messages.md): Alle p2p-artige Nachrichten zwischen Nodes
 
-## High Level Concepts
+## High-Level-Konzepte
 
-High level concepts used in and underlying Nimiq.
+High-Level-Konzepte in Nimiq.
 
-* [Constants](chapters/constants.md): Configuration of the Nimiq core
-* [Nodes and Clients](chapters/nodes-and-clients.md): Node.js and browser, full, small, and nano
-* [Supply and Reward](chapters/supply-and-reward.md): total supply, rewards, difficulty adjustment
-* [Verification](chapters/verify.md): Validation rules for the Nimiq Blockchain
+* [Konstanten](chapters/constants.md): Konfiguration des Nimiq core
+* [Nodes and Clients](chapters/nodes-and-clients.md): Node.js und Browser, full, small, und nano
+* [Versorgung und Belohnung](chapters/supply-and-reward.md): Gesamte Versorgung (total supply), Belohnungen (rewards) und Anpassen der Schwierigkeit (difficulty)
+* [Verifikation](chapters/verify.md): Validierungsregeln für die Nimiq Blockchain
 
-## Further Resources
-Further resources to get an overview of the Nimiq project and ecosystem:
-* [API Documentation](https://github.com/nimiq-network/core/blob/master/dist/API_DOCUMENTATION.md)
-* [Browser Miner](https://miner.nimiq.com) and [Browser Wallet](https://safe.nimiq.com)
-* [Contributing Guidelines](https://github.com/nimiq-network/core/blob/master/.github/CONTRIBUTING.md) and [Code of Conduct](https://github.com/nimiq-network/core/blob/master/.github/CODE_OF_CONDUCT.md)
-* This project is released under the [Apache License 2.0](https://github.com/nimiq-network/core/blob/master/LICENSE.md)
+## Weitere Infos
+Weitere Infos für einen Überblick über das Nimiq-Projekt und System:
+* [API Dokumentation](https://github.com/nimiq-network/core/blob/master/dist/API_DOCUMENTATION.md)
+* [Browser Miner](https://miner.nimiq.com) und [Browser Wallet](https://safe.nimiq.com)
+* [Contributing Guidelines](https://github.com/nimiq-network/core/blob/master/.github/CONTRIBUTING.md) und [Code of Conduct](https://github.com/nimiq-network/core/blob/master/.github/CODE_OF_CONDUCT.md)
+* Dieses Projekt ist unter der [Apache License 2.0](https://github.com/nimiq-network/core/blob/master/LICENSE.md) lizensiert.
 
-
-We believe in communicating our concepts and approaches as clearly as possible. The easier it is to dive into the details, the more people will do it, again resulting in a deeper peer-reviewing process which is essential for the hardening of our protocol. 
-You are very welcome to improve this reference via pull requests.
-
-
-
-
+Wir wollen unsere Konzepte und Herangehensweisen so klar wie möglich herüberbringen. Je einfacher es ist, in die Details zu gehen, desto mehr werden es tun, was wiederum in einen tieferen Peer-Reviewing-Prozess resultiert. Dieser ist essentiell für das Härten unseres Protokolls.
+Verbesserungen dieser Referenz durch Pull Requests sind sehr willkommen.
