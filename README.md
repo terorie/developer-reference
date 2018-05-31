@@ -10,7 +10,7 @@ Diese Entwickler-Referenz enthält:
 
 Datenschemas der Übertragung, mit Fokus auf Feldern, Byte Größen und kurzen Erklärungen.
 
-* [Transaktionen](chapters/transactions.md): basic and extended
+* [Transaktionen](chapters/transactions.md): basic und erweitert
 * [Blockchain](chapters/block.md): Block, Header, Interlink, Body
 * [Accounts and Verträge](chapters/accounts-and-contracts.md): Einfacher Account, Vesting and Hashed Time-Locked Contracts
 * [Account-Baum](chapters/account-tree.md): Details zum Patricia Merkle-Baum, der benutzt wird, um Accounts zu speichern
