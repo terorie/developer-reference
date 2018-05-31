@@ -1,46 +1,45 @@
-# Transactions
+# Transaktionen
 
-- All transactions MUST transfer value (value > 0).
-- The value is always transferred from transaction _sender_ to transaction _recipient_.
-- The hash of the transaction does not include the signature/proof.
-- All transactions in Nimiq have a maximum validity window of 120 blocks, approximately two hours.
-- Transactions in Nimiq do not use a nonce, reoccuring, identical transactions can be send only once the previous transaction has been invalidated or mined.
+- Alle Transaktionen MÜSSEN einen Wert überweisen (value > 0).
+- Der Wert wird immer vom Sender (_sender_) zum Empfänger (_recipient_) überwiesen.
+- Der Hash der Transaktion enthält nicht die Signatur/den Beweis.
+- Alle Transaktionen in Nimiq haben eine maximale Gültigkeitsperiode von 120 Blöcken (ungefähr zwei Stunden).
+- Transaktionen in Nimiq verwenden keine Nonce. Wiederkehrende, identische Transaktionen können nur gesendet werden, sobald die vorherige Transaktion für ungültig erklärt oder gemined wurde.
 
-## Basic transaction
-Size-Optimized format (138 bytes) for simple value transfer from basic to basic account.
+## Einfache Transaktion
+Größen-optimiertes Format (138 bytes) für einfache Überweisungen von einfachem zu einfachem Konto.
 
-| Element               | Data type    | Bytes | Description                                     |
+| Element               | Datentyp     | Bytes | Beschreibung                                    |
 |-----------------------|--------------|-------|-------------------------------------------------|
 | Type                  | uint8        | 1     | `0`                                             |
-| sender                | raw          | 32    | Public key of sender                            |
-| recipient             | Address      | 20    | Recipient's address                             |
-| recipient type        | uint8        | 1     | Account type of recipient                       |
-| value                 | uint64       | 8     | In Satoshi                                      |
-| fee                   | uint64       | 8     | Miner fee                                       |
-| validity start height | uint32       | 4     | Delay by blocks, defaults to current height + 1 |
-| signature             | raw          | 64    | By sender's private key                         |
+| sender                | raw          | 32    | Public key des Senders                          |
+| recipient             | Address      | 20    | Addresse des Empfängers                         |
+| recipient type        | uint8        | 1     | Account-Typ des Empfängers                      |
+| value                 | uint64       | 8     | Betrag in Satoshi                               |
+| fee                   | uint64       | 8     | Miner-Gebühr                                    |
+| validity start height | uint32       | 4     | Verzögerung in Blöcken, (std. jetzige Höhe + 1) |
+| signature             | raw          | 64    | Signatur durch den private key des Senders      |
 
-To make a transaction validity shorter than the default of 120 blocks, set the start height to a value before the current blockchain height. For example, current height - 60 will result in a remaining livetime of 60 blocks, approximately one hour.
+Um die Gültigkeitsperiode einer Transaktion kürzer als die standardmäßigen 120 Blöcke zu machen, kann die Starthöhe auf einen Wert vor der momentanen Blockchain-Höhe gesetzt werden. Zum Beispiel wird _jetzige Höhe - 60_ in einer verbleibenden Zeitspanne von 60 Blöcken resultieren, was ungefähr einer Stunde entspricht.
 
+## Erweiterte Transaktion
+Jede erweiterte Transaktion ist mindestens 68 (3+|data|+65+|proof|) bytes lang.
 
-## Extended transaction
-Each extended transaction is at least 68 (3+|data|+65+|proof|) bytes long.
-
-| Element               | Data type    | Bytes        | Description                                                                  |
+| Element               | Datentyp     | Bytes        | Beschreibung                                                                  |
 |-----------------------|--------------|--------------|------------------------------------------------------------------------------|
 | Type                  | uint8        | 1            | `1`                                                                          |
 | data length           | uint16       | 2            |                                                                              |
-| data                  | raw          | data length  | Intended for recipient                                                       |
+| data                  | raw          | data length  | Für den Empfänger vorgesehen                                                       |
 | sender                | Address      | 20           |                                                                              |
-| sender type           | uint8        | 1            | Account type of sender                                                       |
+| sender type           | uint8        | 1            | Account-Typ des Empfängers                                                       |
 | recipient             | Address      | 20           |                                                                              |
-| recipient type        | uint8        | 1            | Account type of recipient                                                    |
+| recipient type        | uint8        | 1            | Account-Typ des Senders                                                |
 | value                 | uint64       | 8            |                                                                              |
-| fee                   | uint64       | 8            | Fee for miner to include tx in a block                                       |
-| validity start height | uint32       | 4            | Delay by blocks, defaults to current height + 1                              |
-| flags                 | uint8        | 1            | Unknown flags must be 0; Contract Creation (0x1)                             |
+| fee                   | uint64       | 8            | Gebühr für den Miner, die Transaktion in einen Block aufzunehmen                                      |
+| validity start height | uint32       | 4            | Verzögerung in Blöcken, standardmäßig jetzige Höhe + 1                             |
+| flags                 | uint8        | 1            | Unbekannte Flags müssen 0 sein; Erstellung eines Vertrags (0x1)                             |
 | proof length          | uint16       | 2            |                                                                              |
-| proof                 | raw          | proof length | Validity depends on sender account type, account state, current block height |
+| proof                 | raw          | proof length | Validität hängt vom Account-Typ des Senders, Account-Zustand und momentaner Blöck-Höhe ab |
 
-## Transaction hash
-A hash of a transaction is created by using Blake2b on all the fields of an [extended transaction](#extended-transaction), without `type`, `proof length`, and `proof`.
+## Transaktions-Hash
+Ein Hash einer Transaktion wird durch Verwendung von Blake2b auf allen Feldern auf einer [erweiterten Transaktion](#erweiterte-transaktion) ohne `type`, `proof length`, und `proof` erstellt.
