@@ -1,50 +1,50 @@
-# Mining Pool protocol
+# Mining Pool-Protokoll
 
-## General
+## Allgemein
 
-### Client modes
+### Client-Arten
 
-The Nimiq Mining Pool protocol currently describes two client modes: smart and nano.
+Das Nimiq Mining Pool-Protokoll beschreibt zur Zeit zwei Client-Arten: Smart und Nano.
 
-#### smart
+#### Smart
 
-In smart-mode, the client is fully responsible for creating blocks.
-The client operates as a solo-miner would do (and is also capable of doing a graceful fallback to solo mining).
-The server only describes the values to be used as a miner address and in the `extraData` field of a block.
+Im Smart-Modus ist der Client verantwortlich für die Erstellung von Blöcken.
+Der Client verhält wie ein Solo-Miner (und kann auch gegebenenfalls auf Solo-Mining ohne Fehler zurückfall
+Der Server schreibt nur die Werte für die Miner-Adresse und im `extraData`-Feld eines Blocks vor.
 
-The smart-mode Pool Miner requires a Nimiq light- or full-node.
+Der Smart-Modus Pool-Miner setzt eine Nimiq Light- oder Full-Node voraus.
 
-#### nano
+#### Nano
 
-In nano-mode, the client only validates that the pool asks for the correct chain to be operated on.
-The server provides all necessary details for the client to build the block, as long as it operates on a chain known to the client.
-This mode is similar to `getblocktemplate`-based protocols on Bitcoin.
+Im Nano-Modus überprüft der Client nur, ob der Pool Arbeit für die richtige Chain verteilt.
+Der Server stellt dem Client alle nötigen Details zum Erstellen eines Blocks zur Verfügung solange er auf einer Chain arbeitet, die dem Client bekannt ist.
+Dieser Modus ist ähnelt den `getblocktemplate`-basierten Protokollen auf Bitcoin.
 
-The nano-mode Pool Miner requires a Nimiq node of any kind, a nano-node is sufficient.
+Der Nano-Modus Pool-Miner setzt eine Nimiq-Node jeglicher Art voraus, eine Nano-Node reicht dabei aus.
 
-### Network communication
+### Netzwerk-Kommunikation
 
-A secure websocket connection is used as a transport layer for client-server communication. All messages are exchanges as a single WebSocket frame.
+Eine verschlüsselte WebSocket-Verbindung wird als Transportschicht für Client-Server-Kommunikation verwendet. Alle Nachrichten werden als einzelnes WebSocket-Frame ausgetauscht.
 
-## Messages
+## Nachrichten
 
-All messages follow the same structure: they consist of a JSON-encoded object with a property named `message` as well as message specific properties.
+Alle Nachrichten sind gleich strukturiert: Sie bestehen aus einem JSON-kodierten Objekt mit einer Eigenschaft `message` und Nachricht-spezifischen Eigenschaften.
 
 #### `register`
 
-Send by client directly after connecting to the server.
+Wird vom Client direct nach Verbinden an den Server geschickt.
 
-##### Parameters
+##### Parameter
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `mode`    | string, `nano` or `smart` | The mode this client uses |
-| `address` | string | The address (in IBAN-style format) that should be rewarded for the miner actions |
-| `deviceId` | number, uint32 | The clients device id. This ID should be unique for the device and stored, such that it stays the same after restarts |
-| `deviceData` | object, optional | A JSON object including stats about the device. The format of this JSON should be defined by the pool operator |
-| `genesisHash` | string | Base64 encoded hash of the genesis block used by the client |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `mode`    | string, `nano` oder `smart` | Der Modus des Clients |
+| `address` | string | Die Adresse (in IBAN-Format), an die der Lohn geschickt werden soll |
+| `deviceId` | number, uint32 | Die Device-ID des Clients. Diese ID sollte für jedes Gerät einzigartig sein und gespeichert werden, sodass sie bei Neustarts gleich bleibt  |
+| `deviceData` | object, optional | Ein JSON-Objekt, das Eigenschaften über das Gerät enthält. Das Format dieses Objekts sollte vom Pool-Betreiber definiert werden |
+| `genesisHash` | string | Base64-kodierter Hash des Genesis-Blocks des Clients |
 
-##### Example
+##### Beispiel
 
 ```json
 {
@@ -61,9 +61,9 @@ Send by client directly after connecting to the server.
 
 #### `registered`
  
-Sent by the server after a succesful registration. Does not include parameters.
- 
-##### Example
+Wird vom Server nach einer erfolgreichen Anmeldung gesendet. Enthält keine Parameter.
+
+##### Beispiel
  
  ```json
  {
@@ -73,18 +73,18 @@ Sent by the server after a succesful registration. Does not include parameters.
 
 #### `settings`
 
-Sent by the server to announce new mining settings.
+Wird vom Server gesendet, um neue Mining-Einstellungen bekannt zu geben.
 
-##### Parameters
+##### Parameter
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `address` | string | The address (in IBAN-style format) that the client should use as a miner address for future shares |
-| `extraData` | string | Base64 encoded buffer that the client should use in the `extraData` field for future shares |
-| `targetCompact`  | number, uint32 | The maximum allowed hash value for future shares, in compact form |
-| `nonce`   |number, uint64 | A number used once that is associated with this connection |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `address` | string | Die Adresse (in IBAN-Format), die der Client als Miner-Adresse für zukünftige Shares benutzen sollte |
+| `extraData` | string | Der Base64-kodierte Buffer, den der client im `extraData`-Feld für zukünftige Shares benutzen sollte |
+| `targetCompact`  | number, uint32 | Der höchste erlaubte Hash-Wert für zukünftige Shares in Kompaktform |
+| `nonce`   |number, uint64 | Eine einmalig-verwendete Nummer, die mit dieser Verbindung asoziiert wird |
 
-##### Example
+##### Beispiel
  
 ```json
 {
@@ -98,17 +98,17 @@ Sent by the server to announce new mining settings.
 
 #### `new-block` (nano)
 
-Sent by the server to announce a new block that should be used by a client running in nano-mode.
+Wird vom Server gesendet, um dem Nano-Modus-Client mitzuteilen, dass ein neuer Block benutzt werden soll.
 
-##### Parameters
+##### Parameter
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `bodyHash` | string | Base64 encoded hash of the block body |
-| `accountsHash` | string | Base64 encoded hash of the accounts tree after applying the block body |
-| `previousBlock` | string | Base64 encoded light block that is the predecessor of the block to be mined |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `bodyHash` | string | Base64-kodierter Hash des Block-Body |
+| `accountsHash` | string | Base64-kodierter Hash des Account-Trees nach Anwendung des Block-Body |
+| `previousBlock` | string | Base64-kodierter Light-Block, der der Vorgänger des zu  minenden Blocks ist |
 
-##### Example
+##### Beispiel
  
 ```json
 {
@@ -121,24 +121,24 @@ Sent by the server to announce a new block that should be used by a client runni
 
 #### `share`
 
-Sent by client when a valid share was found.
+Wird vom Client gesendet, sobald ein gültiger Share gefunden wurde.
 
-##### Parameters (nano)
+##### Parameter (nano)
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `block`   | string | Base64 encoded light block |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `block`   | string | Base64-kodierter Light-Block |
 
-##### Parameters (smart)
+##### Parameter (smart)
+--
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `blockHeader` | string | Base64-kodierter Block-Header |
+| `minerAddrProof` | string | Base64-kodierter inclusion proof für das `minerAddr`-Feld im Block-Body |
+| `extraDataProof` | string | Base64-kodierter inclusion proof for the `extraData`Feld im Block-Bod |
+| `block`   | string, optional | Base64-kodierter Full-Block. Darf nur gesendet werden, falls der Block gültig ist, sodass der Pool-Server ihn schneller verarbeiten kann |
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `blockHeader` | string | Base64 encoded block header |
-| `minerAddrProof` | string | Base64 encoded inclusion proof for the `minerAddr` field in the block body |
-| `extraDataProof` | string | Base64 encoded inclusion proof for the `extraData` field in the block body |
-| `block`   | string, optional | Base64 encoded full block. May only be sent if the block is a valid block so that the pool server is faster in picking it up |
-
-##### Example (nano)
+##### Beispiel (nano)
  
 ```json
 {
@@ -147,7 +147,7 @@ Sent by client when a valid share was found.
 }
 ```
 
-##### Example (smart)
+##### Beispiel (smart)
  
 ```json
 {
@@ -160,16 +160,16 @@ Sent by client when a valid share was found.
 
 #### `error`
 
-Sent by the server if the client sent an invalid share.
-The server may send this message at most once per `share`.
+Wird vom Server gesendet, falls der Client einen ungültigen Share gesendet hat.
+Der Server darf diese Nachricht höchstens einmal per `share` senden.
 
 ##### Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `reason`  | string | A user-readable string explaining why the server denied the share |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `reason`  | string | Ein benutzerfreundlicher String, der erklärt, wieso der Server den Share abgelehnt hat |
 
-##### Example
+##### Beispiel
  
 ```json
 {
@@ -180,19 +180,19 @@ The server may send this message at most once per `share`.
 
 #### `balance`
 
-Sent by the server to announce the balance that is currently hold by the pool for the address the user announced on `register`.
+Wird vom Server gesendet, um den Betrag des Accounts mitzuteilen, der momentan vom Pool gehalten wird. Die Adresse ist die, die der Benutzer bei `register` gesendet hat.
 
-The server may send this message at any time after the client registered. A new `balance` message does not imply any balance changes.
+Der Server darf diese Nachricht zu einem beliebigen Zeitpunkt nach der Registrierung senden. Eine neue `balance`-Nachricht impliziert nicht eine Veränderung des Betrags.
 
-##### Parameters
+##### Parameter
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `balance` | number | The current balance of the user in the smalest possible unit. This includes funds that are not yet confirmed on the blockchain |
-| `confirmedBalance` | number | The current balance of the user in the smalest possible unit. This only includes funds that operator considers confirmed and are available for payout |
-| `payoutRequestActive` | boolean | `true`, if there is a payout request waiting for the user, `false` otherwise |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|-------------|
+| `balance` | number | Der momentane Pool-Kontostand des Benutzers in der kleinstmöglichen Angabe. Beinhaltet Beträge, die noch nicht auf der Blockchain bestätigt wurden |
+| `confirmedBalance` | number | Der momentane Pool-Kontostand des Benutzers in der kleinstmöglichen Angabe. Beinhaltet nur Beträge, die vom Betreiber als bestätigt aufgefasst werden und zur Auszahlung verfügbar sind |
+| `payoutRequestActive` | boolean | `true`, falls es eine aktive Auszahlungs-Anforderung gibt, ansonsten`false` |
 
-##### Example
+##### Beispiel
  
 ```json
 {
@@ -205,15 +205,15 @@ The server may send this message at any time after the client registered. A new 
 
 #### `payout`
 
-Sent by the client to request payout from the server. Depending on server configuration, manual payout may be suspect to an additional fee.
+Wird vom Client gesendet, um eine Auszahlung anzufordern. Je nach Server-Konfiguration ist dies mit einer zusätzlichen Gebühr verbunden.
 
-##### Parameters
+##### Parameter
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `proof`   | string | Base64 encoded signature proof of the string `POOL_PAYOUT`, concatenated with the byte representation of the connection nonce. |
+| Parameter | Typ | Beschreibung |
+|-----------|-----|--------------|
+| `proof`   | string | Base64-kodierter string `POOL_PAYOUT`, mit anschließender Byte-Repräsentation der connection nonce |
 
-##### Example
+##### Beispiel
  
 ```json
 {
