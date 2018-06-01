@@ -1,37 +1,37 @@
-# Node and Client Types
+# Node und Client-Arten
 
-There are two types of clients in the Nimiq Network: NodeJS Clients and Browser Clients. Both types use the same isomorphic JavaScript code base and can run any of the three node types: Full, Light and Nano. Some combination of Node/Client types will, in the long run, be more common that others (i.e Browser Clients will mainly be light/nano nodes, and they won’t necessarily participate as miners).
+Es gibt zwei Arten von Clients im Nimiq Netzwerk: NodeJS-Clients und Browser-Clients. Beide basieren auf demselben JavaScript-Code und können einen der drei Node-Arten ausführen: Full, Light und Nano. Einige Kombinationen von Node/Client-Arten werden auf längere Sicht häufiger sein als andere (z.B. werden Browser-Clients hauptsächlich light/nano Nodes sein und nicht unbedingt als Miner teilnehmen).
 
-## Client Types
+## Client-Typen
 
-Depending on the platform (Browser/NodeJS) used to run the Client, it will work as a Browser Client or a NodeJS Client. Another main difference between the two of them is that Browser Clients store the Blockchain data in [IndexedDB](https://developers.google.com/web/ilt/pwa/working-with-indexeddb#what_is_indexeddb) (which has a limited capacity of ~50MB) whereas NodeJS Clients rely on [LevelDB](https://github.com/google/leveldb) (with no size constraint). To maintain a common codebase through Client Types we developed [JungleDB](https://github.com/nimiq-network/jungle-db).
+Je nachdem, welche Plattform (Browser/NodeJS) benutzt wird, um den Client auszuführen wird die Node als Browser- oder NodeJS-Client arbeiten. Eine weiterer großer Unterschied zwischen den zwei ist, dass Browser-Clients die Blockchain-Daten in  [IndexedDB](https://developers.google.com/web/ilt/pwa/working-with-indexeddb#what_is_indexeddb) speichern (auf ~50 MB begrenzt), wohingegen NodeJS-Clients auf [LevelDB](https://github.com/google/leveldb) basieren (keine Größenbeschränkung). Damit weniger Code gewartet werden muss, der für beide Client-Typen wiederverwendet werden kann, haben wir [JungleDB](https://github.com/nimiq-network/jungle-db) entwickelt.
 
-### NodeJS Client
+### NodeJS-Client
 
-NodeJS Clients are meant to run on servers and, thanks to their virtually unlimited storage capacity and publicly routable IP address, act as backbone of the network. They communicate with each other via [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket), and they act as entry point and signaling server for Browser Clients to establish browser-to-browser WebRTC connections.
+NodeJS-Clients eignen sich am Besten für Server. Dank ihrer praktisch unbegrenzten Speicherkapazität und öffentlichen IP-Adresse fungieren sie als das Backbone des Netzwerks. Sie kommunizieren miteinander via [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) und sind Einstiegspunkte und Vermittler für Browser-zu-Browser WebRTC-Verbindungen.
 
-Browser APIs are restricted to secure origins. This means that NodeJS Clients need to provide an encrypted connection for Browser Clients to connect to them. This requires a domain and an SSL certificate.
+Browser APIs sind beschränkt auf sichere Quellen. Das heißt, dass NodeJS-Clients eine verschlüsselte Verbindung für Browser-Clients bereitstellen müssen, damit sie sich verbinden können. Das setzt eine Domain und ein SSL-Zertifikat voraus.
 
-### Browser Client
+### Browser-Client
 
-Browser Clients are built upon browser engines and therefore they are completely installation-free. To connect to the network, they establish a WebSocket connection to at least one NodeJS Client. Once they have established their first connection, they start to establish browser-to-browser connections using the NodeJS Client as signaling server. Browser Clients can also act as signaling server for further browser-to-browser connections.
+Browser-Clients sind auf Browser-Engines aufgebaut und daher komplett frei von Installationen. Um sich mit dem Netzwerk zu verbinden, stellen sie mindestens eine Verbindung zu einem NodeJS-Client her. Sobald sie ihre erste Verbindung hergestellt haben, beginnen sie Browser-zu-Browser-Verbindungen mit Hilfe von NodeJS-Clients als Vermittler zu eröffnen. Browser-Client können auch Vermittler für weitere Browser-zu-Browser-Verbindungen sein.
 
-By using [Babel](https://babeljs.io/) older browser versions are supported, WebRTC functionality is a requirement so only browsers that support WebRTC can connect to the network.
+Durch den Einsatz von [Babel](https://babeljs.io/) werden auch ältere Browser-Versionen unterstützt. WebRTC ist jedoch eine Voraussetzung, also können sich nur Browser mit WebRTC-Unterstützung mit dem Netzwerk verbinden.
 
-An easy way to understand the different Clients/Nodes Types is to have a look at [the most simple web application on top of the Nimiq Blockchain](https://demo.nimiq.com/).
+Ein Blick auf [die einfachste Anwendung auf der Nimiq Blockchain](https://demo.nimiq.com/) kann dabei helfen, die verschiedenen Client/Node-Arten zu verstehen.
 
-## Node Types
+## Node-Typen
 
-Distinct Node types are used for different usecases and they differentiate from one another in the amount of data they need to download in order to join and synchronize with the network, which directly affects the time it takes each Node type to establish consensus and be able to process and validate transactions.
+Unterschiedliche Node-Arten werden für verschiedene Einsatzzwecke herangezogen. Sie unterscheiden sich durch die Menge an Daten, die sie benötigen, um mit dem Netzwerk zu synchronisieren und beizutreten, was sich direkt auf die Dauer, Konsens zu erreichen (Fähigkeit Transaktionen zu verarbeiten und überprüfen), auswirkt.
 
-### Full Nodes
+### Full-Nodes
 
-Nodes of this type download the full blockchain thus requiring more storage. We expect this node type to be used solely with NodeJS Clients although theoretically it could run also in a browser.
+Nodes dieses Typen laden die vollständige Blockchain und brauchen daher mehr Speicher. Wir erwarten, dass diese Art von Node ausschließlich mit NodeJS verwendet wird, obwohl sie theoretisch auch in einem Browser laufen könnte.
 
-### Light Nodes
+### Light-Nodes
 
-This type of nodes securely sync to almost full consensus by downloading just about 100 MB. To do that they use a LightChain which is initialized by using NiPoPoWs instead of the full blockchain history, but after initialization, it behaves as a regular full blockchain.
+Diese Art von Node synchronisiert sich sicher zu nahezu vollständigem Konsens durch Laden von nur ungefähr 100 MB. Um das zu erreichen, benutzen sie eine LightChain, welche durch Verwendung von NiPoPoWs anstelle des vollständigen Blockchain-Verlaufs initialisiert wird. Nach Initialisierung verhält sie sich jedoch wie eine reguläre Full-Blockchain.
 
-### Nano Nodes
+### Nano-Nodes
 
-The preferred Node type for the Browser Clients since they require less data to be downloaded (~ 1MB) in order to establish consensus.
+Sie ist die bevorzugte Art von Node für Browser-Clients aufgrund des geringen benötigten Datenvolumens (~1 MB), um Konsens zu erreichen.
