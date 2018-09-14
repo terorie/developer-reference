@@ -1,44 +1,45 @@
 # Messages
 
-All message contain following basic fields:
+Alle Nachrichten beinhalten diese Felder:
 
-| Element   | Data type    | Bytes      | Description                |
+| Element   | Datentyp     | Bytes      | Beschreibung               |
 |-----------|--------------|------------|----------------------------|
-| magic     | uint32       | 4	 		    | `0x42042042`, Indicating that this is a message. |
-| type      | [VarInt](primitives.md#variable-integer) | >=1, <= 8 | Usually 1 bytes |
-| length    | uint32       | 4	 		    | length of the message. Currently ignored. |
-| checksum  | uint32       | 4	 		    | CRC32 checksum. |
+| magic     | uint32       | 4	 		    | `0x42042042`, Zeigt an, dass es sich um eine Nachricht handelt. |
+| type      | [VarInt](primitives.md#variable-integer) | >=1, <= 8 | Normalerweise 1 byte. |
+| length    | uint32       | 4	 		    | Länge der Nachricht. Zur Zeit ignoriert. |
+| checksum  | uint32       | 4	 		    | CRC32 Prüfsumme. |
 
-All messages have a fixed [message type](constants.md#message-types).
-Additional fields of specialized messages will be added behind.
+Alle Nachrichten haben einen fixen [Nachrichtentyp](constants.md#message-types).
+Zusätzliche Felder spezialisierter Nachrichten werden hinten angefügt.
 
-## Version Message
+## Version Nachricht
 
-This message `type = 0` sends out the status of this node, including it's protocol version, peer address, genesis block hash, and the hash of the latest block in its blockchain (the head).
+Diese Nachricht `type = 0` sendet den Status dieser Node, die Protokollversion, Peer-Adresse, Hash des Genesis-Blocks und den Hash des letzten Blocks in der Blockchain (der Head).
 
-| Element         | Data type  | Bytes | Description
+| Element         | Datentyp   | Bytes | Beschreibung
 |-----------------|------------|-------|---
-| version         | uint32     | 4     | version of the protocol
-| peer address    | uint32     | 4     | Three address types; see below
-| genesis hash    | Hash       | 32    | Hash of Genesis block
-| head hash       | Hash       | 32    | Hash of latest block in node's blockchain.
+| version         | uint32     | 4     | Version des Protokolls
+| peer address    | uint32     | 4     | Drei Adresstypen; siehe unten
+| genesis hash    | Hash       | 32    | Hash des Genesis-Blocks
+| head hash       | Hash       | 32    | Hash des letzten Blocks in der Blockchain des Knotens
 | challenge nonce | raw        | 32    | Peer needs to sign to authenticate.
 
 ## Addresses
 
-Three addresses are being used: Web Socket address, Web RTC address, and pain/dumb address.
+Drei Adressestypen werden benutzt: WebSocket-, WebRTC- und "dumb"-Adressen.
 
+Alle drei teilen folgende Felder:
 All three share following fields:
 
-| Element      | Data type      | Bytes  | Description
+| Element      | Datentyp       | Bytes  | Beschreibung
 |--------------|----------------|--------|---
 | protocol     | uint8          | 1      | `0..2`: dumb, RTC, WS address. See below.
 | service mask | uint32         | 4      | `0` none, `1` nano, `2` light, `4` full
 | timestamp    | uint64         | 8      | Used by other nodes to calculate offset.
-| net address  | string         | 1 - 17 | IPv4 address as string unless the IP is private (then empty string), or `<unknown>`; first byte specifies length.
-| public key   | raw            | 32     | Peer's public key
+| net address  | string         | 1 - 17 | IPv4-Adresse als String falls nicht privat (dann leerer String), oder `<unknown>`; erstes Byte gibt länge an.
+| public key   | raw            | 32     | Public Key des Peers
 | signature    | raw            | 64     | Peer signs net address to make sure it can not be modified by someone else
-| distance     | uint8          | 1      | Number of hops to this peer, `1` meaning the peers are connected directly.
+| distance     | uint8          | 1      | Anzahl der Hops zu diesem Peer, `1` bedeutet direkte Verbindung.
 
 Each peer is identified by it's peer ID, which is obtained by truncating the public key down to 16 bytes.
 The RTC peer address uses the peer ID as signaling ID.
