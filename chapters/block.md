@@ -1,60 +1,60 @@
 # Blockchain
 
 ## Block
-A Nimiq block can exist in two modes: full and light. A light block is equal to a full block, but does not have a body.
-A Nimiq block can be at most 1MB (1 million bytes) maximum and is composed of (body optional):
+Ein Nimiq Block kann in zwei Arten existieren: Full und Light. Ein Light-Block ist ein Full-Block ohne Block-Body.
+Ein Block kann maximal 100 kB (10^5 bytes) groß sein und ist folgendermaßen aufgebaut (Body optional):
 
-| Element           | Bytes   | Description
-|-------------------|---------|--------
-| Header            | 146     |
-| Interlink         | <= 8193 |
-| Full/Light Switch | 1       | `0` or `1`
-| Body              | >= 117  | If switch is `1`
+| Element             | Bytes   | Beschreibung
+|---------------------|---------|--------
+| Header              | 146     |
+| Interlink           | <= 8193 |
+| Full/Light Schalter | 1       | `0` or `1`
+| Body                | >= 117  | Falls der Schalter `1` ist
 
 
 ## Header
-The header has total size of 162 bytes and is composed of:
+Der Header hat eine Gesamtgröße von 146 bytes und besteht aus:
 
-| Element       | Data type | Bytes | Description                                                       |
+| Element       | Datentyp  | Bytes | Beschreibung                                                      |
 |---------------|-----------|-------|-------------------------------------------------------------------|
-| version       | uint16    | 2     | Protocol version                                                  |
-| previous hash | Hash      | 32    | Hash of previous block                                            |
-| interlink     | Hash      | 32    | Cf. [interlink](#interlink)                                       |
-| body hash     | Hash      | 32    | Cf. [body hash](#body-hash) and [body](#body)                     |
-| accounts hash | Hash      | 32    | Root hash of PM tree storing accounts state, cf. [account tree](accounts-tree.md) |
-| nBits         | bits      | 4     | Minimum difficulty for Proof-of-Work                              |
-| height        | uint32    | 4     | Blockchain height when created                                    |
-| timestamp     | uint32    | 4     | When the block was created                                        |
-| nonce         | uint32    | 4     | Needs to fulfill Proof-of-Work difficulty required for this block |
+| version       | uint16    | 2     | Protokoll-Version                                                 |
+| previous hash | Hash      | 32    | Hash des Vorgänger-Blocks                                         |
+| interlink     | Hash      | 32    | Siehe [interlink](#interlink)                                     |
+| body hash     | Hash      | 32    | Siehe [body hash](#body-hash) und [body](#body)                   |
+| accounts hash | Hash      | 32    | Root-Hash des PM-Baums, der den Zustand aller Accounts speichert. Siehe. [account tree](accounts-tree.md) |
+| nBits         | bits      | 4     | Minimale Difficulty für Proof-of-Work                             |
+| height        | uint32    | 4     | Blockchain height zum Zeitpunkt des Erstellens                    |
+| timestamp     | uint32    | 4     | Wann der Block erstellt wurde                                     |
+| nonce         | uint32    | 4     | Verwendet, um die benötigte Proof-of-Work Difficulty zu erfüllen  |
 
-At main net launch time, version will be "1" and hashes in the header will be based on Blake2b.
+Die version ist `1` seit Mainnet. Alle Hashes im Header sind [Blake2b](#hash).
 
 ### Previous Hash
 
-The expressions "block hash" and "block header hash" refer to the same hash.
-The hash is used to refer to the previous block in the blockchain.
-It's created using [Blake2b](#hash) on the serialized block header of the previous block as pre-image.
-
+Die Ausdrücke "Block Hash" und "Block Header Hash" beziehen sich auf denselben Hash.
+Der Hash wird benutzt, um den vorherigen Block in der Blockchain zu referenzieren.
+Er wird durch Anwenden von [Blake2b](#hash) auf dem Block Header des Vorgänger-Blocks erstellt.
 
 ## Interlink
-The interlink implements the [Non Interactive Proofs of Proof of Work (NiPoPow)](https://eprint.iacr.org/2017/963.pdf) and contains links to previous blocks.
+Der Interlink implementiert die [Non Interactive Proofs of Proof of Work (NiPoPow)](https://eprint.iacr.org/2017/963.pdf) und enthält Links zu vorherigen Blöcken.
 
-An interlink is composed of:
+Ein Interlink besteht aus:
 
-| Element     | Data type    | Bytes         | Description                              |
+| Element     | Datentyp     | Bytes         | Beschreibung                             |
 |-------------|--------------|---------------|------------------------------------------|
-| count       | uint8        | 1             | Up to 255 blocks can be referred         |
-| repeat bits | bit map      | ceil(count/8) | So duplicates can be skipped. See below. |
-| hashes      | [Hash]       | <= count * 32 | Hashes of referred blocks                |
+| count       | uint8        | 1             | Bis zu 255 Blöcke können referenziert werden |
+| repeat bits | bit map      | ceil(count/8) | Für das Übersprigen von doppelten Links. Siehe unten. |
+| hashes      | [Hash]       | <= count * 32 | Hashes der referenzierten Blöcke.        |
 
-Repeat bits is a bit mask corresponding to the list of hashes,
-a 1-bit indicating that the hash at that particular index is the same as the previous one,
-i.e. repeated, and thus the hash will not be stored in the hash list again to reduce size.
-As each hash is represented by one bit the size is ceil(count/8).
+Repeat bits ist eine Bitmaske, die sich auf die Liste von Hashes bezieht.
+Eine `1` gibt an, dass der Hash an diesem Index (Position des Bits in der Maske) derselbe ist wie der vorherige,
+also wiederholt (repeated).
+Eine `0` zeigt einen neuen Hash an. Für jede `0` wird ein Hash aus der Hashes-Liste geladen.
+Da jeder Hash in der Bitmaske von einem Bit repräsentiert wird ist die Gesamtgröße der Maske `ceil(count/8)`.
 
-`hashes` are a list of up to 255 block hashes of 32 bytes each.
+`hashes` ist eine Liste von bis zu 255 Hashes von jeweils 32 Bytes.
 
-Thus, an interlink can be up to 1+ceil(255/8)+255*32 = 8193 bytes.
+Ein Interlink hat also eine maximale Größe von 1 + ceil(255/8) + 255*32 = 8193 Bytes.
 
 ### Interlink Construction
 The concept of [Non-Interactive Proofs of Proof-of-Work](https://eprint.iacr.org/2017/963.pdf) are used to create the interlink.
